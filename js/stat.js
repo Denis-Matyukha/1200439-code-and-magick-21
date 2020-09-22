@@ -1,11 +1,61 @@
 'use strict';
 
-window.renderStatistics = function(ctx) {
+const CLOUD_WIDTH = 500;
+const CLOUD_HEIGHT = 200;
+const CLOUD_X = 100;
+const CLOUD_Y = 50;
+const GAP = 10;
+const FONT_GAP = 15;
+const TEXT_WIDTH = 50;
+const BAR_HEIGHT = 20;
+const BAR_WIDTH = CLOUD_WIDTH - GAP - TEXT_WIDTH - GAP;
 
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-  ctx.fillRect(110, 60, 500, 200);
+const renderCloud = function(ctx, x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
+};
 
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(100, 50, 500, 200);
+const getMaxElement = function(arr) {
+  const maxElement = arr[0];
 
+  for (const i = 1; i < arr.length; i++) {
+    if (arr[i] > maxElement) {
+      maxElement = arr[i];
+    }
+  }
+
+  return maxElement;
+};
+
+window.renderStatistics = function(ctx, players, times) {
+  renderCloud(
+    ctx,
+    CLOUD_X + GAP,
+    CLOUD_Y + GAP,
+    'rgba(0, 0, 0, 0.3)'
+  );
+  renderCloud(
+    ctx,
+    CLOUD_X,
+    CLOUD_Y,
+    '#fff'
+  );
+
+  ctx.fillStyle = '#000';
+
+  const maxTime = getMaxElement(times);
+
+  for (const i = 0; i < players.length; i++) {
+    ctx.fillText(
+      players[i],
+      CLOUD_X + GAP,
+      CLOUD_Y + GAP + FONT_GAP + (GAP + BAR_HEIGHT) * i
+    );
+    ctx.fillRect(
+      CLOUD_X + GAP + TEXT_WIDTH,
+      CLOUD_Y + GAP + (GAP + BAR_HEIGHT) * i,
+      (BAR_WIDTH * times[i]) / maxTime,
+      BAR_HEIGHT
+    );
+  }
 };
